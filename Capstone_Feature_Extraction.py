@@ -11,6 +11,8 @@ warnings.filterwarnings("ignore")
 import flirt
 import flirt.reader.empatica
 
+from ecgdetectors import Detectors
+
 # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 # Function to derive statistical feature of a dataset specified columns
 # Parameters:
@@ -24,11 +26,17 @@ def get_stats_features(dataset, sensor_columns):
     # get data frame for list of columns
     data = dataset[sensor_columns]
     stats_feature_dict = {}
-    for col in sensor_columns:
-        col_mean = data[col].mean()
-        col_std = data[col].std()
-        # store mean and std for the feature
-        stats_feature_dict[col] = (col_mean,col_std)
+    for feature in sensor_columns:
+        stats_feature_dict[feature+'_mean'] = data[feature].mean()
+        stats_feature_dict[feature+'_std'] = data[feature].std()
+        stats_feature_dict[feature+'_min'] = np.min(data[feature])
+        stats_feature_dict[feature + '_max'] = np.max(data[feature])
+        stats_feature_dict[feature + '_range'] = np.max(data[feature]) - np.min(data[feature])
+        stats_feature_dict[feature + '_median'] = np.median(data[feature])
+        stats_feature_dict[feature + '_skew'] = data[feature].skew()
+        stats_feature_dict[feature + '_kurtosis'] = data[feature].kurtosis()
+        stats_feature_dict[feature + '_iqr'] = np.percentile(data[feature], 75) - np.percentile(data[feature], 25)
+        stats_feature_dict[feature + '_cv'] = np.std(data[feature]) / np.mean(data[feature])
     
     return stats_feature_dict
 
@@ -174,3 +182,39 @@ def get_eda_features(dataset,window_length=60,window_step_size=1,frequency=700):
     
     return data
 
+
+def get_ECG_feature_column(var_ECG_raw_data, fs=700, n_row_increments=5000):
+    var_ECG_df = pd.DataFrame([])
+    var_ECG_df["raw_ECG"] = var_ECG_raw_data
+    var_ECG_df["ECG_freq"] = np.nan
+    
+    ### code taken from:  https://dsp.stackexchange.com/questions/58155/how-to-filter-ecg-and-detect-r-peaks
+    fs=700 # sample freq
+
+    var_ECG_ff_list = []
+    for var_current_row in range(n_row_increments,len(var_ECG_raw_data)+1,n_row_increments):
+        var_start = var_current_row-n_row_increments
+        var_end = var_current_row
+        #print(var_start,var_end)
+        heartbeat = var_ECG_raw_data[var_start:var_end]
+
+        detectors = Detectors(fs)
+
+        r_peaks_pan = detectors.pan_tompkins_detector(heartbeat)
+        r_peaks_pan= np.asarray(r_peaks_pan)
+        
+        var_ff = len(r_peaks_pan)
+        var_ECG_ff_list.append(var_ff)
+        
+        var_ECG_df["ECG_freq"][var_start:var_end] = var_ff
+    
+    # fill in last part of array with previous value here:
+    #print(var_current_row)
+    #print(var_ff)
+    var_start = var_current_row
+    var_end = len(var_ECG_raw_data)
+    var_ECG_df["ECG_freq"][var_start:var_end] = var_ff
+    
+    # return tuple:  (dataframe of ECG signal , the frequency list of each measured interval)
+  
+    return (var_ECG_df, var_ECG_ff_list)
