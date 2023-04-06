@@ -85,5 +85,35 @@ def plot_acc_for_subject(dataset,
         plt.ylabel("Amplitude [m/s^2]")
         plt.show()
 
+# +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+# Function to subplot data distribution across all signals within the datasets 
+# Parameters:
+# Input: 
+# datasets: dataframe for which subplot for each signal data distribution to plot
+# Output/Return : 
+# bar plots of each sensors like ecg,emg
+# +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
+def plot_sensor_data(df, sensor_list):
+    num_sensors = len(sensor_list)
+    num_rows = 2
+    num_cols = int(np.ceil(num_sensors / num_rows))
+    fig, axes = plt.subplots(num_rows, num_cols, figsize=(12, 8))
+    axes = axes.flatten()
+    
+    for i, sensor in enumerate(sensor_list):
+        data = df[sensor]
+        ax = axes[i]
+        hist, bin_edges = np.histogram(data, bins=20)
+        ax.bar(bin_edges[:-1], hist, width=np.diff(bin_edges)[0]*0.8)
+        ax.set_title(f'{sensor} Distribution')
+        ax.set_xlabel(sensor)
+        ax.set_ylabel('Count')
+        ax.ticklabel_format(style='plain', axis='y')
+        
+    if num_sensors % 2 != 0:
+        axes[-1].remove()
+        
+    plt.tight_layout()
+    plt.show()
 
