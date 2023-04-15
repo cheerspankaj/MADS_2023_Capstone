@@ -72,8 +72,8 @@ def get_acc_features(dataset,window_length=60,window_step_size=1,frequency=700):
     
     # get batch size to update set of records for a specific feature value
     batch_size = total_records/frequency
-    print('Total Number of records to be added for each feature:',total_records)
-    print('Batch Size:',batch_size)
+    #print('Total Number of records to be added for each feature:',total_records)
+    #print('Batch Size:',batch_size)
     
     # get All ACC features
     acc_features = flirt.get_acc_features(data,
@@ -85,6 +85,8 @@ def get_acc_features(dataset,window_length=60,window_step_size=1,frequency=700):
 
     acc_features_list = ['l2_mean','l2_std', 'l2_min', 'l2_max', 'l2_ptp', 'l2_sum', 'l2_energy', 'l2_peaks', 'l2_rms', 
                          'l2_lineintegral','l2_n_above_mean', 'l2_n_below_mean', 'l2_n_sign_changes', 'l2_entropy']
+    
+    print('ACC features to be added:',acc_features_list)
     
     for feature in acc_features_list:
         #print('Adding Feature:',feature)
@@ -151,8 +153,8 @@ def get_eda_features(dataset,window_length=60,window_step_size=1,frequency=700):
     
     # get batch size to update set of records for a specific feature value
     batch_size = total_records/frequency
-    print('Total Number of records to be added for each feature:',total_records)
-    print('Batch Size:',batch_size)
+    #print('Total Number of records to be added for each feature:',total_records)
+    #print('Batch Size:',batch_size)
     
     # get All features    
     eda_features = flirt.get_eda_features(data,
@@ -166,6 +168,7 @@ def get_eda_features(dataset,window_length=60,window_step_size=1,frequency=700):
                          'phasic_mean', 'phasic_std','phasic_min', 'phasic_max','phasic_energy','phasic_peaks', 'phasic_rms',
                          'phasic_entropy']
     
+    print('EDA features to be added:',eda_features_list)
     #for feature in eda_features.columns:
     for feature in eda_features_list:
         #print('Adding Feature:',feature)
@@ -201,10 +204,14 @@ def get_eda_features(dataset,window_length=60,window_step_size=1,frequency=700):
             data.loc[range(int(record_start_index),int(record_end_index)), feature] = feature_value
     
     return data
-# ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-# Add function definition
-# 
-# +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+# +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+# Function to compute ECG frequency from ECG signals
+# Parameters:
+# Input: 
+# datasets: dataset with ECG features
+# Output/Return : 
+# Input dataset with ECG_Freq
+# +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
 def get_ECG_feature_column(var_ECG_raw_data, fs=700, n_row_increments=5000):
     var_ECG_df = pd.DataFrame([])
@@ -283,14 +290,6 @@ def extract_emg_features(emg_signal, sampling_rate):
 # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
 def eda_features(eda, sampling_rate=700):
-    
-#     # Compute the mean and standard deviation of the EDA signal
-#     eda_mean = np.mean(eda)
-#     eda_std = np.std(eda)
-
-#     # Compute the maximum and minimum of the EDA signal
-#     eda_max = np.max(eda)
-#     eda_min = np.min(eda)
 
     # Convert EDA signal to conductance (G)
     eda = eda / 1000  # Convert from microsiemens to siemens
@@ -330,10 +329,6 @@ def eda_features(eda, sampling_rate=700):
     # Compute the SCR frequency
     eda_scr_freq = eda_scr_num / (eda.size / sampling_rate)
 
-    # Compute the mean and standard deviation of the EDA signal
-    # eda_mean = np.mean(eda_smoothed)
-    # eda_std = np.std(eda_smoothed)
-
     # Return a dictionary containing the EDA features
     eda_dict = {
         'eda_amp_mean': eda_amp_mean,
@@ -344,8 +339,6 @@ def eda_features(eda, sampling_rate=700):
         'eda_recovery_std': eda_recovery_std,
         'eda_scr_num': eda_scr_num,
         'eda_scr_freq': eda_scr_freq
-        #'eda_mean': eda_mean,
-        #'eda_std': eda_std
     }
 
     return eda_dict

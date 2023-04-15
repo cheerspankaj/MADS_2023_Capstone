@@ -1,32 +1,35 @@
-#!/usr/bin/env python
-# coding: utf-8
-
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
 import seaborn as sns
 sns.set_theme()
 
-# set file path
-# file_path = '/scratch/siads699w23_class_root/siads699w23_class/team8_cpastone_2023/'
-# data_filename = 'chest_data_with_label_12_subjects_TRAIN_DATA_with_survey.csv'
-
 # assign label and code
 effective_state_label = {'Baseline':1,'Stress':2,'Amusement':3,'Meditation':4}
 
-# Function to plot line graph for a subject for a specific sensor type e.g. "ECG"
+# +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+# Function to plot line graph for a subject for a specific sensor type passed to the function e.g. "ECG"
+# Parameters:
+# Input: 
+# datasets: dataset with features for which graph is to be created
+# Subject: Subject number in the dataset
+# num_of_records : Number of records to be used for plot
+# sensor_type : name of the sensor to be used for plot
+# labels : List of labels to be used for plot e.g. ["Baseline",'Stress"]
+# first_last : first N records or last N records to be used for plot
+# sample rate: data sampling rate to be used for plot
+# Output/Return : 
+# line plot for the subject for the labels provided associated with the sensor specified
+# ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
 def plot_data_for_subject(dataset,
                           subject,
                           num_of_records,
                           sensor_type,
-                          #file_path = file_path,
-                          #file_name =data_filename,
                           labels=effective_state_label,
                           first_last = 'head',
                           sample_rate = 700):
     
-    #dataset = pd.read_csv(file_path+file_name)
-
     for label in labels:
         subj_data = dataset.loc[(dataset.subject == subject) & (dataset.label == effective_state_label[label])]   
         if first_last == 'first': 
@@ -48,17 +51,27 @@ def plot_data_for_subject(dataset,
         plt.ylabel("Amplitude")
         plt.show()
 
+# +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 # Function to plot ACC graph for a subject
+# Parameters:
+# Input: 
+# datasets: dataset with features for which graph is to be created
+# Subject: Subject number in the dataset
+# num_of_records : Number of records to be used for plot
+# labels : List of labels to be used for plot e.g. ["Baseline",'Stress"]
+# first_last : first N records or last N records to be used for plot
+# sample rate: data sampling rate to be used for plot
+# Output/Return : 
+# ACC X,Y and Z line plot for the subject for the labels provided
+# ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
 def plot_acc_for_subject(dataset,
                          subject,
-                         #file_path = file_path,
-                         #file_name =data_filename,
                          num_of_records = 1000,
                          labels=effective_state_label,
                          first_last = 'head',
                          sample_rate = 700
                         ):
-    #dataset = pd.read_csv(file_path+file_name)
 
     for label in labels:
         subj_acc_data = dataset.loc[(dataset.subject == subject) & (dataset.label == effective_state_label[label])]
@@ -73,7 +86,6 @@ def plot_acc_for_subject(dataset,
         time_steps = np.linspace(0, max_time, subject_acc_data.shape[0])
 
         plt.figure(figsize=(10,5))
-        #ACC_X = range(0,subject_acc_data.shape[0])
         ACC_X = time_steps
         plt.plot(ACC_X,subject_acc_data.ACC_X,label = "accelerometer channel-X")
         plt.plot(ACC_X,subject_acc_data.ACC_Y,label = "accelerometer channel-Y")
@@ -117,3 +129,24 @@ def plot_sensor_data(df, sensor_list):
     plt.tight_layout()
     plt.show()
 
+# +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+# Function to create barplot based on provided specification
+# Parameters:
+# Input: 
+# x: x-axis data
+# y: y-axis data
+# x_label: label for x-axis
+# y_label: label for y-axis
+# t_title: title for the graph
+# Output/Return : 
+# None
+# +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+def plot_records_count(x,y,x_label,y_label,t_title,bar_width=0.3,fig_x=15,fig_y=5):
+    fig = plt.figure(figsize = (fig_x,fig_y))
+    plt.bar(x,y,width = bar_width)
+
+    plt.xlabel(x_label)
+    plt.ylabel(y_label)
+    plt.title(t_title)
+    plt.show()
