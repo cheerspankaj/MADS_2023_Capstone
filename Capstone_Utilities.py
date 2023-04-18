@@ -129,3 +129,105 @@ def split_data(data_X,data_y):
     y_validate = data_y[stop_train:stop_validate]
     y_test = data_y[stop_validate:]
     return X_train,X_validate,X_test,y_train,y_validate,y_test
+
+# ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+# Function to drop records which are N std deviation from mean 
+# Parameters:
+# Input: 
+# var_df: input dataframe
+# var_column_list: list of columns in the dataframe
+# var_n_std: n standard deviation from the mean
+# Output/Return : 
+# var_original_df: Original dataframe
+# var_df: modified dataframe with anomaly column
+# ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+def drop_n_std_from_mean(var_df, var_column_list, var_n_std):
+    var_original_df = var_df.copy()
+    var_original_df["Anomaly"] = 0
+    
+    # only look at columns which are in the column list   
+    
+    var_original_len = len(var_df)
+    # find column standard deviation here
+    var_mean_std_list = []
+    for var_current_column in var_column_list:
+        var_std_column = var_original_df[var_current_column].std(skipna=True)
+        var_mean_column = var_original_df[var_current_column].mean(skipna=True) 
+        var_mean_std_list.append([var_std_column, var_mean_column])
+
+    # go through columns here:
+    var_column_number = 0
+    for var_current_column in var_column_list:
+        var_std_column = abs(var_mean_std_list[var_column_number][0])
+        var_mean_column = abs(var_mean_std_list[var_column_number][1])
+        
+        print()
+        print("Sensor = ", var_current_column)
+        print("std = ", var_std_column)
+        print("mean = ", var_mean_column)
+        
+        var_three_std_away = var_mean_column + (var_n_std*var_std_column)
+        
+        var_len = len(var_df)
+        
+        if math.isnan(var_std_column) == False:
+            #print("got here...")
+            var_original_df["Anomaly"] = np.where(abs(var_original_df[var_current_column]) > var_three_std_away, 1, var_original_df["Anomaly"])
+            
+            var_df = var_df[(abs(var_df[var_current_column]) <= var_three_std_away)]
+            #print(var_df.shape)
+
+        var_len_final = len(var_df)
+        var_total_rows_dropped = var_len - var_len_final
+            
+        print("dropped rows = ", var_total_rows_dropped)
+        print("% dropped rows = ", (var_total_rows_dropped / var_len)*100)
+        
+        var_column_number = var_column_number + 1
+    
+    var_len_final = len(var_df)
+    var_total_rows_dropped = var_original_len - var_len_final
+    
+    print()
+    print("total dropped rows = ", var_total_rows_dropped)
+    print("% dropped rows = ", (var_total_rows_dropped / var_len)*100)
+    
+    return (var_original_df, var_df)
+
+# ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+# Function to build anomaly 
+# Parameters:
+# Input: 
+# var_input_df: input dataframe
+# var_subject_list: list of subjects records to filter from dataset
+# var_n_std: n standard deviation from the mean
+# Output/Return : 
+# var_final_df: final dataframe with anomaly column
+# ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+def build_anomaly_df(var_input_df, var_subject_list,var_n_std):
+    # concat each dataframe together again to create final df with anomaly column
+    
+    # anomaly is defined as n std away from the mean for each subject, state combination
+    var_subject_state_number = 0
+    var_subject_number = 0
+    for var_current_subject in var_subject_list:
+        var_current_subject_df = var_input_df[var_input_df["subject"] == var_current_subject]
+        for var_current_state in var_state_list:
+            print("var_current_subject = ", var_current_subject)
+            print("var_current_state = ", var_current_state)
+            # get sub dataframe here for current subject:
+            var_current_subject_state_df = var_current_subject_df[var_current_subject_df["label"] == var_current_state]
+            if len(var_current_subject_state_df) > 0:
+                var_current_subject_anomaly_df = drop_n_std_from_mean(var_current_subject_state_df, var_std_column_list,var_n_std)[0]
+                if var_subject_state_number == 0:
+                    var_final_df = var_current_subject_anomaly_df.iloc[:1,:]
+                    #print(var_final_df.shape)
+                    var_final_df = pd.concat([var_final_df, var_current_subject_anomaly_df], axis = 0, ignore_index=True)
+                else:
+                    var_final_df = pd.concat([var_final_df, var_current_subject_anomaly_df], axis = 0, ignore_index=True)
+            var_subject_state_number = var_subject_state_number + 1
+        var_subject_number = var_subject_number + 1
+    # remove first row here:
+    var_final_df = var_final_df.iloc[1:,:]
+    return var_final_df 
