@@ -1,1 +1,13 @@
-fdsafdsjafkdl;sa
+pandas
+torch
+datetime
+numpy
+tqdm
+mne
+flirt
+matplotlib
+seaborn
+ecgdetectors
+scipy
+yellowbricks
+sklearn
