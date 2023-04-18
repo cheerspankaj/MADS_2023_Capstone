@@ -7,7 +7,7 @@ mne
 flirt
 matplotlib
 seaborn
-ecgdetectors
+py-ecg-detectors
 scipy
 yellowbricks
 sklearn
