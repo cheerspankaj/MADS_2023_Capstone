@@ -1,1 +1,8 @@
-fdafdasfa
+The primary dataset contains wearable sensors data for 15 subjects contained in the individual subject folder as pickle file. As part of data preprocessing all pickle file data is combined/merged into two dataset i.e. training dataset and test dataset respectively. In addition to the primary dataset, two secondary datasets were created using the information provided for individual subjects and subject reported outcomes.
+
+Primary dataset: Publicly available Link: https://uni-siegen.sciebo.de/s/HGdUkoNlW1Ub0Gx/download
+
+Secondary dataset : Created from the publicly available dataset.
+
+- subject_personal_info.xlsx
+- survey_ref_table_subject_responses.csv
