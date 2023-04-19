@@ -1,4 +1,4 @@
-# Capstone Team- 8 Digital Biomaker
+# Capstone Team- 8 Digital Biomakers
 ## <img width="400" height="400" alt="Screenshot 2023-04-17 at 6 18 57 PM" src="https://user-images.githubusercontent.com/108576861/232935357-dc2101b3-0aac-420d-8aa6-16e0da3f3ed9.png">  <img width="400" height="400" alt="Screenshot 2023-04-17 at 6 29 28 PM" src="https://user-images.githubusercontent.com/108576861/232935597-e05a0f4d-0964-40eb-9456-115461516b6d.png">
 
 Image source Link:https://whiterose.ac.uk/news/digital-health-medical-technologies/
