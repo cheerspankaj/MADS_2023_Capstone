@@ -1,7 +1,9 @@
 # Capstone Team- 8 Digital Biomaker
-## <img width="400" height="400" alt="Screenshot 2023-04-17 at 6 18 57 PM" src="https://user-images.githubusercontent.com/108576861/232935357-dc2101b3-0aac-420d-8aa6-16e0da3f3ed9.png">  <img width="300" height="400" alt="Screenshot 2023-04-17 at 6 29 28 PM" src="https://user-images.githubusercontent.com/108576861/232935597-e05a0f4d-0964-40eb-9456-115461516b6d.png">
+## <img width="400" height="400" alt="Screenshot 2023-04-17 at 6 18 57 PM" src="https://user-images.githubusercontent.com/108576861/232935357-dc2101b3-0aac-420d-8aa6-16e0da3f3ed9.png">  <img width="400" height="400" alt="Screenshot 2023-04-17 at 6 29 28 PM" src="https://user-images.githubusercontent.com/108576861/232935597-e05a0f4d-0964-40eb-9456-115461516b6d.png">
 
+Image source Link:https://whiterose.ac.uk/news/digital-health-medical-technologies/
 
+Image source Link: http://pure-oai.bham.ac.uk/ws/files/144982402/IqbalT2021sensitivity.pdf
 
 ## Objectives
 
@@ -27,6 +29,7 @@ Secondary dataset : Created from the publicly available dataset.
 
 ## ![Screenshot 2023-04-18 at 8 37 15 PM](https://user-images.githubusercontent.com/108576861/232936374-97f2ff63-3c2f-430f-863c-c86e13010ef1.png)
 
+Image source Link :https://flirt.readthedocs.io/en/latest/index.html
 
 To perform the data preprocessing and feature engineering, please follow the below steps.
 
